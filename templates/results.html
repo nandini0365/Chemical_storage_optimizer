@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Results - Chemical Storage Optimizer</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .cabinet {
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: #f8f9ff;
+      }
+      .chemical-tag {
+        display: inline-block;
+        background-color: #e9ecef;
+        padding: 5px 10px;
+        margin: 2px;
+        border-radius: 15px;
+        font-size: 0.9em;
+      }
+      .hazard-high {
+        background-color: #f8d7da;
+      }
+      .hazard-medium {
+        background-color: #fff3cd;
+      }
+      .hazard-low {
+        background-color: #d4edda;
+      }
+      .metrics-card {
+        border-left: 4px solid #0d6efd;
+      }
+      .storage-layout-card {
+        border-left: 4px solid #ffc107;
+      }
+      .cabinet-count {
+        font-size: 0.8em;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-left: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-primary">
+      <div class="container">
+        <span class="navbar-brand mb-0 h1">
+          🧪 Chemical Storage Optimizer - Results
+        </span>
+        <a href="/" class="btn btn-light">← Back to Optimizer</a>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header bg-success text-white">
+              <h5>📊 Chemical Conflict Graph</h5>
+            </div>
+            <div class="card-body text-center">
+              {% if is_demo and graph_image %}
+              <img
+                src="data:image/png;base64,{{ graph_image }}"
+                class="img-fluid"
+                alt="Chemical Conflict Graph"
+              />
+              {% else %}
+              <img
+                id="graph-image"
+                class="img-fluid"
+                alt="Chemical Conflict Graph"
+              />
+              {% endif %}
+              <p class="text-muted mt-2">
+                Vertices represent chemicals, edges show incompatibilities with
+                severity weights
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card metrics-card">
+            <div class="card-header bg-primary text-white">
+              <h5>🏆 Optimization Results</h5>
+            </div>
+            <div class="card-body">
+              <div id="optimization-metrics">
+                {% if is_demo and metrics %}
+                <p>
+                  <strong>Cabinets Required:</strong> {{ metrics.num_cabinets }}
+                </p>
+                <p><strong>Chemicals Stored:</strong> {{ chemicals|length }}</p>
+                <p>
+                  <strong>Safety Score:</strong> {{ (metrics.safety_score *
+                  100)|round(1) }}%
+                </p>
+                <p>
+                  <strong>Max Cabinet Size:</strong> {{ metrics.max_cabinet_size
+                  }} chemicals
+                </p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-3 storage-layout-card">
+            <div class="card-header bg-warning text-dark">
+              <h5>🗄️ Optimized Storage Layout</h5>
+            </div>
+            <div class="card-body">
+              <div id="storage-layout-container">
+                {% if is_demo and cabinets %} {% for cabinet_num, chems in
+                cabinets.items() %}
+                <div class="cabinet mb-3">
+                  <div
+                    class="cabinet-header bg-secondary text-white p-2 mb-2 rounded"
+                  >
+                    <h6 class="mb-0">
+                      Cabinet {{ cabinet_num + 1 }}
+                      <span class="cabinet-count"
+                        >{{ chems|length }} chemicals</span
+                      >
+                    </h6>
+                  </div>
+                  {% for chem in chems %} {% set hazard =
+                  chemicals[chem].hazard_level %}
+                  <div
+                    class="chemical-tag hazard-{% if hazard == 3 %}high{% elif hazard == 2 %}medium{% else %}low{% endif %} mb-1"
+                  >
+                    {{ chem }}
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endfor %} {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-dark text-light mt-5 py-4">
+      <div class="container text-center">
+        <p>
+          Graph Theory Application - Chemical Storage Optimization using Vertex
+          Coloring
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Check if we have results from sessionStorage (custom optimization)
+      document.addEventListener("DOMContentLoaded", function () {
+        const optimizationResults = sessionStorage.getItem(
+          "optimizationResults"
+        );
+
+        if (optimizationResults) {
+          // Custom optimization results
+          const data = JSON.parse(optimizationResults);
+          displayCustomResults(data);
+          sessionStorage.removeItem("optimizationResults"); // Clean up
+        }
+      });
+
+      function displayCustomResults(data) {
+        // Update graph image
+        document.getElementById("graph-image").src =
+          "data:image/png;base64," + data.graph_image;
+
+        const bestMetrics = data.results[data.best_algorithm].metrics;
+        const cabinets = data.results[data.best_algorithm].cabinets;
+
+        // Calculate maximum cabinet size
+        let maxCabinetSize = 0;
+        Object.values(cabinets).forEach((chemicals) => {
+          if (chemicals.length > maxCabinetSize) {
+            maxCabinetSize = chemicals.length;
+          }
+        });
+
+        document.getElementById("optimization-metrics").innerHTML = `
+                <p><strong>Cabinets Required:</strong> ${
+                  bestMetrics.num_cabinets
+                }</p>
+                <p><strong>Chemicals Stored:</strong> ${
+                  Object.keys(data.chemicals).length
+                }</p>
+                <p><strong>Safety Score:</strong> ${(
+                  bestMetrics.safety_score * 100
+                ).toFixed(1)}%</p>
+                <p><strong>Max Cabinet Size:</strong> ${maxCabinetSize} chemicals</p>
+            `;
+
+        // Display storage layout
+        const layoutContainer = document.getElementById(
+          "storage-layout-container"
+        );
+        layoutContainer.innerHTML = "";
+
+        Object.entries(cabinets).forEach(([cabinetNum, chemicals]) => {
+          const cabinetDiv = document.createElement("div");
+          cabinetDiv.className = "cabinet mb-3";
+          cabinetDiv.innerHTML = `
+                    <div class="cabinet-header bg-secondary text-white p-2 mb-2 rounded">
+                        <h6 class="mb-0">
+                            Cabinet ${parseInt(cabinetNum) + 1}
+                            <span class="cabinet-count">${
+                              chemicals.length
+                            } chemicals</span>
+                        </h6>
+                    </div>
+                `;
+
+          chemicals.forEach((chem) => {
+            const hazard = data.chemicals[chem].hazard_level;
+            const hazardClass = `hazard-${
+              hazard === 1 ? "low" : hazard === 2 ? "medium" : "high"
+            }`;
+            const tag = document.createElement("div");
+            tag.className = `chemical-tag ${hazardClass} mb-1`;
+            tag.textContent = chem;
+            cabinetDiv.appendChild(tag);
+          });
+
+          layoutContainer.appendChild(cabinetDiv);
+        });
+      }
+    </script>
+  </body>
+</html>

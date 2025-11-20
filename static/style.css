@@ -1,0 +1,109 @@
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.chemical-item,
+.incompatibility-item {
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+}
+
+.card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  border-radius: 8px;
+}
+
+.insight-item {
+  transition: transform 0.2s;
+}
+
+.insight-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cabinet {
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+}
+
+.cabinet-header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.chemical-tag {
+  display: inline-block;
+  background-color: #e9ecef;
+  padding: 5px 10px;
+  margin: 2px;
+  border-radius: 15px;
+  font-size: 0.9em;
+}
+
+.hazard-low {
+  background-color: #d4edda;
+  border-left: 4px solid #28a745;
+}
+.hazard-medium {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+}
+.hazard-high {
+  background-color: #f8d7da;
+  border-left: 4px solid #dc3545;
+}
+
+.time-slot {
+  border: 1px solid #6c757d;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f8f9fa;
+}
+
+.algorithm-card {
+  border-left: 4px solid #007bff;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f8f9fa;
+}
+
+.best-algorithm {
+  border-left: 4px solid #28a745;
+  background-color: #d4edda;
+}
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .btn-group .btn {
+    font-size: 0.8rem;
+  }
+}

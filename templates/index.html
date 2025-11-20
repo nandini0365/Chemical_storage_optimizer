@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chemical Storage Optimizer</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+      }
+      .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+      }
+      .chemical-item,
+      .incompatibility-item {
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        margin-bottom: 10px;
+      }
+      .btn-group .btn {
+        margin: 2px;
+      }
+      .optimize-btn-container {
+        margin-top: 2rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-primary">
+      <div class="container">
+        <span class="navbar-brand mb-0 h1">
+          🧪 Chemical Storage Optimizer
+        </span>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <div class="hero-section text-center">
+        <h1>Chemical Storage Optimization</h1>
+        <p class="lead">
+          Using Graph Coloring Algorithms for Safe Chemical Storage
+        </p>
+        <p>
+          Apply graph theory concepts to optimize chemical storage and prevent
+          hazardous reactions
+        </p>
+      </div>
+
+      <div class="row">
+        <!-- Left Column - User Input -->
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header bg-success text-white">
+              <h5>🧪 Add Chemicals</h5>
+            </div>
+            <div class="card-body">
+              <div id="chemicals-list">
+                <div class="chemical-item">
+                  <div class="row">
+                    <div class="col-6">
+                      <input
+                        type="text"
+                        class="form-control chemical-name"
+                        placeholder="Chemical Name"
+                        value="HCl"
+                      />
+                    </div>
+                    <div class="col-4">
+                      <select class="form-select hazard-level">
+                        <option value="1">Low Hazard</option>
+                        <option value="2" selected>Medium Hazard</option>
+                        <option value="3">High Hazard</option>
+                      </select>
+                    </div>
+                    <div class="col-2">
+                      <button class="btn btn-danger btn-sm remove-chemical">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                id="add-chemical"
+                class="btn btn-outline-success btn-sm mt-2"
+              >
+                <i class="fas fa-plus"></i> Add Chemical
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header bg-warning text-dark">
+              <h5>⚠️ Define Incompatibilities</h5>
+            </div>
+            <div class="card-body">
+              <div id="incompatibilities-list">
+                <div class="incompatibility-item">
+                  <div class="row">
+                    <div class="col-5">
+                      <select class="form-select chem1">
+                        <option>HCl</option>
+                      </select>
+                    </div>
+                    <div class="col-5">
+                      <select class="form-select chem2">
+                        <option>NaOH</option>
+                      </select>
+                    </div>
+                    <div class="col-2">
+                      <button
+                        class="btn btn-danger btn-sm remove-incompatibility"
+                      >
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row mt-2">
+                    <div class="col-12">
+                      <select class="form-select severity">
+                        <option value="1">Low Severity</option>
+                        <option value="2" selected>Medium Severity</option>
+                        <option value="3">High Severity</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                id="add-incompatibility"
+                class="btn btn-outline-warning btn-sm mt-2"
+              >
+                <i class="fas fa-plus"></i> Add Incompatibility
+              </button>
+            </div>
+          </div>
+
+          <!-- Only the optimize button, no text below -->
+          <div class="optimize-btn-container">
+            <button id="optimize-btn" class="btn btn-primary btn-lg">
+              <i class="fas fa-rocket"></i> Optimize Chemical Storage
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column - Examples and Info -->
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header bg-info text-white">
+              <h5>📚 Predefined Examples</h5>
+            </div>
+            <div class="card-body">
+              <p>Quickly load predefined chemical storage scenarios:</p>
+              <div class="d-grid gap-2">
+                <button
+                  class="btn btn-outline-primary load-example"
+                  data-example="basic"
+                >
+                  Basic Lab Chemicals
+                </button>
+                <button
+                  class="btn btn-outline-primary load-example"
+                  data-example="industrial"
+                >
+                  Industrial Chemicals
+                </button>
+                <button
+                  class="btn btn-outline-primary load-example"
+                  data-example="academic"
+                >
+                  Academic Laboratory
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header bg-secondary text-white">
+              <h5>📊 How It Works</h5>
+            </div>
+            <div class="card-body">
+              <ol class="small">
+                <li class="mb-2">
+                  <strong>Add Chemicals</strong> with their hazard levels
+                </li>
+                <li class="mb-2">
+                  <strong>Define Incompatibilities</strong> between chemicals
+                </li>
+                <li class="mb-2">
+                  <strong>Graph Coloring</strong> algorithms assign cabinets
+                </li>
+                <li class="mb-2">
+                  <strong>Optimal Layout</strong> prevents hazardous reactions
+                </li>
+                <li class="mb-2">
+                  <strong>Minimal Cabinets</strong> required for safe storage
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <div class="spinner-border text-primary mb-3" role="status"></div>
+            <h5>Optimizing Chemical Storage...</h5>
+            <p>Applying graph coloring algorithms to find optimal solution</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-dark text-light mt-5 py-4">
+      <div class="container text-center">
+        <p>
+          Graph Theory Application - Chemical Storage Optimization using Vertex
+          Coloring
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Predefined examples
+      const examples = {
+        basic: {
+          chemicals: [
+            { name: "HCl", hazard: "3" },
+            { name: "NaOH", hazard: "2" },
+            { name: "Ethanol", hazard: "2" },
+            { name: "Acetone", hazard: "2" },
+            { name: "H2O2", hazard: "3" },
+          ],
+          incompatibilities: [
+            { chem1: "HCl", chem2: "NaOH", severity: "3" },
+            { chem1: "HCl", chem2: "Ethanol", severity: "1" },
+            { chem1: "NaOH", chem2: "Ethanol", severity: "1" },
+            { chem1: "Ethanol", chem2: "H2O2", severity: "3" },
+            { chem1: "Acetone", chem2: "H2O2", severity: "3" },
+          ],
+        },
+        industrial: {
+          chemicals: [
+            { name: "HCl", hazard: "3" },
+            { name: "NaOH", hazard: "2" },
+            { name: "Ethanol", hazard: "2" },
+            { name: "Acetone", hazard: "2" },
+            { name: "H2O2", hazard: "3" },
+            { name: "NaCN", hazard: "3" },
+            { name: "KMnO4", hazard: "2" },
+            { name: "CH3COOH", hazard: "2" },
+            { name: "NH3", hazard: "2" },
+            { name: "C6H6", hazard: "3" },
+          ],
+          incompatibilities: [
+            { chem1: "HCl", chem2: "NaOH", severity: "3" },
+            { chem1: "HCl", chem2: "Ethanol", severity: "1" },
+            { chem1: "NaOH", chem2: "Ethanol", severity: "1" },
+            { chem1: "Ethanol", chem2: "H2O2", severity: "3" },
+            { chem1: "Acetone", chem2: "H2O2", severity: "3" },
+            { chem1: "NaCN", chem2: "HCl", severity: "3" },
+            { chem1: "KMnO4", chem2: "Ethanol", severity: "2" },
+            { chem1: "KMnO4", chem2: "Acetone", severity: "2" },
+            { chem1: "CH3COOH", chem2: "NaOH", severity: "2" },
+            { chem1: "NH3", chem2: "HCl", severity: "2" },
+            { chem1: "C6H6", chem2: "H2O2", severity: "3" },
+            { chem1: "C6H6", chem2: "KMnO4", severity: "2" },
+          ],
+        },
+        academic: {
+          chemicals: [
+            { name: "H2SO4", hazard: "3" },
+            { name: "NaOH", hazard: "2" },
+            { name: "Methanol", hazard: "2" },
+            { name: "Chloroform", hazard: "2" },
+            { name: "Nitric Acid", hazard: "3" },
+            { name: "Silver Nitrate", hazard: "2" },
+          ],
+          incompatibilities: [
+            { chem1: "H2SO4", chem2: "NaOH", severity: "3" },
+            { chem1: "H2SO4", chem2: "Methanol", severity: "2" },
+            { chem1: "NaOH", chem2: "Chloroform", severity: "2" },
+            { chem1: "Methanol", chem2: "Nitric Acid", severity: "3" },
+            { chem1: "Chloroform", chem2: "Silver Nitrate", severity: "1" },
+          ],
+        },
+      };
+
+      // Initialize the application
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeChemicalList();
+        initializeIncompatibilityList();
+        setupEventListeners();
+      });
+
+      function initializeChemicalList() {
+        updateChemicalSelects();
+      }
+
+      function initializeIncompatibilityList() {
+        updateChemicalSelects();
+      }
+
+      function setupEventListeners() {
+        // Add chemical button
+        document
+          .getElementById("add-chemical")
+          .addEventListener("click", addChemical);
+
+        // Add incompatibility button
+        document
+          .getElementById("add-incompatibility")
+          .addEventListener("click", addIncompatibility);
+
+        // Optimize button
+        document
+          .getElementById("optimize-btn")
+          .addEventListener("click", optimizeStorage);
+
+        // Example buttons
+        document.querySelectorAll(".load-example").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            loadExample(this.dataset.example);
+          });
+        });
+      }
+
+      function addChemical() {
+        const chemicalsList = document.getElementById("chemicals-list");
+        const newChemical = document.createElement("div");
+        newChemical.className = "chemical-item";
+        newChemical.innerHTML = `
+                <div class="row">
+                    <div class="col-6">
+                        <input type="text" class="form-control chemical-name" placeholder="Chemical Name">
+                    </div>
+                    <div class="col-4">
+                        <select class="form-select hazard-level">
+                            <option value="1">Low Hazard</option>
+                            <option value="2" selected>Medium Hazard</option>
+                            <option value="3">High Hazard</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-danger btn-sm remove-chemical"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            `;
+        chemicalsList.appendChild(newChemical);
+
+        // Add event listener to remove button
+        newChemical
+          .querySelector(".remove-chemical")
+          .addEventListener("click", function () {
+            const chemicalName =
+              newChemical.querySelector(".chemical-name").value;
+            chemicalsList.removeChild(newChemical);
+            removeChemicalFromIncompatibilities(chemicalName);
+            updateChemicalSelects();
+          });
+
+        // Add input event to update selects when chemical name changes
+        newChemical
+          .querySelector(".chemical-name")
+          .addEventListener("input", updateChemicalSelects);
+
+        updateChemicalSelects();
+      }
+
+      function addIncompatibility() {
+        const incompatibilitiesList = document.getElementById(
+          "incompatibilities-list"
+        );
+        const newIncompatibility = document.createElement("div");
+        newIncompatibility.className = "incompatibility-item";
+        newIncompatibility.innerHTML = `
+                <div class="row">
+                    <div class="col-5">
+                        <select class="form-select chem1"></select>
+                    </div>
+                    <div class="col-5">
+                        <select class="form-select chem2"></select>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-danger btn-sm remove-incompatibility"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <select class="form-select severity">
+                            <option value="1">Low Severity</option>
+                            <option value="2" selected>Medium Severity</option>
+                            <option value="3">High Severity</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        incompatibilitiesList.appendChild(newIncompatibility);
+
+        // Update selects for the new incompatibility
+        updateChemicalSelects();
+
+        // Add event listener to remove button
+        newIncompatibility
+          .querySelector(".remove-incompatibility")
+          .addEventListener("click", function () {
+            incompatibilitiesList.removeChild(newIncompatibility);
+          });
+      }
+
+      function removeChemicalFromIncompatibilities(chemicalName) {
+        const incompatibilityItems = document.querySelectorAll(
+          ".incompatibility-item"
+        );
+        incompatibilityItems.forEach((item) => {
+          const chem1 = item.querySelector(".chem1").value;
+          const chem2 = item.querySelector(".chem2").value;
+
+          if (chem1 === chemicalName || chem2 === chemicalName) {
+            item.remove();
+          }
+        });
+      }
+
+      function updateChemicalSelects() {
+        const chemicalNames = Array.from(
+          document.querySelectorAll(".chemical-name")
+        )
+          .map((input) => input.value)
+          .filter((name) => name.trim() !== "");
+
+        document.querySelectorAll(".chem1, .chem2").forEach((select) => {
+          const currentValue = select.value;
+          select.innerHTML = "";
+
+          // Add empty option
+          const emptyOption = document.createElement("option");
+          emptyOption.value = "";
+          emptyOption.textContent = "Select Chemical";
+          select.appendChild(emptyOption);
+
+          chemicalNames.forEach((name) => {
+            const option = document.createElement("option");
+            option.value = name;
+            option.textContent = name;
+            select.appendChild(option);
+          });
+
+          // Try to restore previous value if it still exists
+          if (chemicalNames.includes(currentValue)) {
+            select.value = currentValue;
+          } else if (currentValue === "") {
+            select.value = "";
+          } else {
+            // If the previous value doesn't exist anymore, select the first available chemical
+            select.value = chemicalNames[0] || "";
+          }
+        });
+
+        // Enable/disable remove buttons based on count
+        const chemicalItems = document.querySelectorAll(".chemical-item");
+        const incompatibilityItems = document.querySelectorAll(
+          ".incompatibility-item"
+        );
+
+        chemicalItems.forEach((item, index) => {
+          const removeBtn = item.querySelector(".remove-chemical");
+          removeBtn.disabled = chemicalItems.length === 1;
+        });
+
+        incompatibilityItems.forEach((item, index) => {
+          const removeBtn = item.querySelector(".remove-incompatibility");
+          removeBtn.disabled = incompatibilityItems.length === 1;
+        });
+      }
+
+      function loadExample(exampleName) {
+        const example = examples[exampleName];
+        if (!example) return;
+
+        // Clear existing data
+        document.getElementById("chemicals-list").innerHTML = "";
+        document.getElementById("incompatibilities-list").innerHTML = "";
+
+        // Load chemicals
+        example.chemicals.forEach((chem) => {
+          addChemical();
+          const lastChemical = document.querySelector(
+            "#chemicals-list .chemical-item:last-child"
+          );
+          lastChemical.querySelector(".chemical-name").value = chem.name;
+          lastChemical.querySelector(".hazard-level").value = chem.hazard;
+        });
+
+        // Remove the extra empty chemical (from the initial addChemical call)
+        const chemicalItems = document.querySelectorAll(
+          "#chemicals-list .chemical-item"
+        );
+        if (chemicalItems.length > example.chemicals.length) {
+          chemicalItems[chemicalItems.length - 1].remove();
+        }
+
+        // Load incompatibilities
+        example.incompatibilities.forEach((inc) => {
+          addIncompatibility();
+          const lastInc = document.querySelector(
+            "#incompatibilities-list .incompatibility-item:last-child"
+          );
+          lastInc.querySelector(".chem1").value = inc.chem1;
+          lastInc.querySelector(".chem2").value = inc.chem2;
+          lastInc.querySelector(".severity").value = inc.severity;
+        });
+
+        // Remove the extra empty incompatibility (from the initial addIncompatibility call)
+        const incompatibilityItems = document.querySelectorAll(
+          "#incompatibilities-list .incompatibility-item"
+        );
+        if (incompatibilityItems.length > example.incompatibilities.length) {
+          incompatibilityItems[incompatibilityItems.length - 1].remove();
+        }
+
+        updateChemicalSelects();
+      }
+
+      function optimizeStorage() {
+        const chemicals = Array.from(
+          document.querySelectorAll(".chemical-item")
+        )
+          .map((item) => ({
+            name: item.querySelector(".chemical-name").value,
+            hazard: item.querySelector(".hazard-level").value,
+          }))
+          .filter((chem) => chem.name.trim() !== "");
+
+        const incompatibilities = Array.from(
+          document.querySelectorAll(".incompatibility-item")
+        )
+          .map((item) => ({
+            chem1: item.querySelector(".chem1").value,
+            chem2: item.querySelector(".chem2").value,
+            severity: item.querySelector(".severity").value,
+          }))
+          .filter((inc) => inc.chem1 && inc.chem2 && inc.chem1 !== inc.chem2);
+
+        if (chemicals.length === 0) {
+          alert("Please add at least one chemical");
+          return;
+        }
+
+        if (chemicals.length < 2) {
+          alert(
+            "Please add at least two chemicals to define incompatibilities"
+          );
+          return;
+        }
+
+        // Show loading modal
+        const loadingModal = new bootstrap.Modal(
+          document.getElementById("loadingModal")
+        );
+        loadingModal.show();
+
+        // Send data to server
+        fetch("/optimize", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chemicals: chemicals,
+            incompatibilities: incompatibilities,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            loadingModal.hide();
+            if (data.success) {
+              displayResults(data);
+            } else {
+              alert("Error: " + data.error);
+            }
+          })
+          .catch((error) => {
+            loadingModal.hide();
+            console.error("Error:", error);
+            alert("Error optimizing storage: " + error.message);
+          });
+      }
+
+      function displayResults(data) {
+        // Store results in sessionStorage to pass to results page
+        sessionStorage.setItem("optimizationResults", JSON.stringify(data));
+
+        // Redirect to results page
+        window.location.href = "/results";
+      }
+    </script>
+  </body>
+</html>
