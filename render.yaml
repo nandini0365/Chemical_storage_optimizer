@@ -3,5 +3,6 @@ services:
     name: math-aba
     env: python
     plan: free
+    pythonVersion: 3.10
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
