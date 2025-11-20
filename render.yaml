@@ -1,8 +1,10 @@
 services:
   - type: web
-    name: math-aba
-    env: python
+    name: chemical-optimizer
     plan: free
-    pythonVersion: 3.10
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    env: docker
+    dockerfilePath: Dockerfile
+    startCommand: ""
+    envVars:
+      - key: PORT
+        value: 10000
